@@ -45,14 +45,4 @@ class TestEntity < Test::Unit::TestCase
 
         assert_equal({ :foo => 'foo', :bar => 'bar', :baz => 'baz' }, serialized)
     end
-
-    def test_equality
-        one = ComparableEntity.new(:id => 1)
-        two = ComparableEntity.new(:id => 1)
-        three = ComparableEntity.new(:id => 2)
-
-        assert_true(one == two)
-        assert_false(one == three)
-    end
-
 end

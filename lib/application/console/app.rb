@@ -12,8 +12,9 @@ class ConsoleApp
 
     def run
         while true do
-            puts 'Enter the command:'
+            print 'Enter the command > '
             break unless @dispatcher.dispatch gets
+            puts
         end
     end
 end

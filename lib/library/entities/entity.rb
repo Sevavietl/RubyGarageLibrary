@@ -25,8 +25,4 @@ class Entity
     def attributes
         self.class.attributes
     end
-
-    def ==(other_entity)
-        @id == other_entity.id
-    end
 end

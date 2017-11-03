@@ -23,6 +23,17 @@ class TestOrderRepo < Test::Unit::TestCase
         assert_equal(1509655769, order.date)
     end
 
+    def test_create
+        order = Order.new({ :book_id => 1, :reader_id => 1 })
+
+        new_order = OrderRepo.create(order)
+
+        assert_equal(12, new_order.id)
+        assert_false(new_order.date == nil)
+
+        OrderRepo.delete(new_order)
+    end
+
     def test_get_reader
         order = OrderRepo.find(1)
         
