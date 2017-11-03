@@ -22,6 +22,7 @@ class TestCsvAdapter < Test::Unit::TestCase
 
         assert_equal(book1, @@adapter.find(Book, 1))
         assert_equal(book2, @@adapter.find(Book, 2))
+        assert_equal(nil, @@adapter.find(Book, 25))
     end
 
     def test_create
@@ -71,6 +72,7 @@ class TestCsvAdapter < Test::Unit::TestCase
         assert_equal(2, books.size)
         assert_equal(2, books[0][:id])
         assert_equal(3, books[1][:id])
+        assert_equal([], @@adapter.query(Book, { :field => :author_id, :sign => :>=, :value => 25 }))
 
         remove_temporary_book
     end

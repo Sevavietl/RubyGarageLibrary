@@ -27,7 +27,7 @@ class TestReaderRepo < Test::Unit::TestCase
         reader = ReaderRepo.find(1)
         orders = ReaderRepo.get_orders(reader)
         
-        assert_equal(3, orders.size)
+        assert_equal(4, orders.size)
     end
 
     def test_get_books

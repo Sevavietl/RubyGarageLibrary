@@ -1,0 +1,5 @@
+#!/usr/bin/env ruby
+
+require './lib/application/console/app.rb'
+
+ConsoleApp.new.run
