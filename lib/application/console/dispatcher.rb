@@ -16,6 +16,8 @@ class Dispatcher
             case command.strip
                 when /^help$/
                     help
+                when /^clear$/
+                    puts %x{clear}
                 when /^exit$/
                     return false
                 when /^list ([a-z]+)$/
@@ -100,7 +102,10 @@ class Dispatcher
         puts 'Use `show SUBJECT ID` to show the particular item;'
         puts 'Use `create SUBJECT` to create new item;'
         puts 'Use `update SUBJECT ID` to update the particular item;'
-        puts 'Use `top [N] books` to list top N books. If no N provided the top book is returned;'
-        puts 'Use `exit` to exit program;'
+        puts 'Use `top [N] book[s]` to list top N books. If no N provided the top book is returned;'
+        puts 'Use `top [N] book[s] readers count` to list top N books readers count. If no N provided the top book is returned;'
+        puts 'Use `book ID top reader` to show top reader of book;'
+        puts 'Use `clear` to clear screen;'
+        puts 'Use `exit` to exit program.'
     end
 end
