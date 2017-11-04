@@ -14,7 +14,7 @@ module HtmlFormater
         end
 
         def format
-            template = '<tr>'.concat('<td>%s</td>' * 2).concat('</tr>')
+            template = '<tr><th>%s</th><td>%s</td></tr>'
             
             @string = '<table><tbody>%s</tbody></table>' % @item.to_hash.inject('') do |acc, (k, v)|
                 acc.concat(template % [k.to_s.split('_').map { |s| s.capitalize }.join(' '), decorate_cell(k, v)])

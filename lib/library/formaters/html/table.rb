@@ -30,7 +30,7 @@ module HtmlFormater
         end
 
         def body
-            template = '<tr>'.concat('<th>%s</th>' * @attributes.count).concat('</tr>')
+            template = '<tr>'.concat('<td>%s</td>' * @attributes.count).concat('</tr>')
 
             "<tbody>%s</tbody>" % (@items.map do |item| 
                 template % item.to_hash.inject([]) { |acc, (k, v)| acc.push decorate_cell(k, v) }

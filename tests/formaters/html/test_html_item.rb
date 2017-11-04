@@ -11,7 +11,7 @@ class TestHtmlItem < Test::Unit::TestCase
     def test_format
         item = HtmlFormater::Item.new BookRepo.find(1)
 
-        string = '<table><tbody><tr><td>Id</td><td>1</td></tr><tr><td>Title</td><td>The Jungle Book</td></tr><tr><td>Author Id</td><td><a href="/author/1">1</a></td></tr></tbody></table>'
+        string = "<table><tbody><tr><th>Id</th><td>1</td></tr><tr><th>Title</th><td>The Jungle Book</td></tr><tr><th>Author Id</th><td><a href=\"/author/1\">1</a></td></tr></tbody></table>"
 
         assert_equal(string, item.format)
         assert_equal(string, item.to_s)
