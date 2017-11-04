@@ -1,6 +1,9 @@
+require_relative './helpers.rb'
+
 module AsciiFormater
     
     class Table
+        include Helpers
 
         def initialize(items)
             @items = items
@@ -44,11 +47,6 @@ module AsciiFormater
         def footer
             hr
         end
-
-        def hr
-            ('-' * @column_lengthes.values.inject(1){ |acc, v| acc + v + 1 }).concat("\n")
-        end
-
     end
 
 end

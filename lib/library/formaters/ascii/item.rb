@@ -1,6 +1,10 @@
+require_relative './helpers.rb'
+
 module AsciiFormater
     
     class Item
+        include Helpers
+
         def initialize(item)
             @item = item
             calculate_column_lengthes
@@ -31,10 +35,6 @@ module AsciiFormater
             @column_lengthes[1] = @item.to_hash.values.inject(0) do |max, v|
                 [max, v.to_s.length].max
             end
-        end
-
-        def hr
-            ('-' * @column_lengthes.values.inject(1){ |acc, v| acc + v + 1 }).concat("\n")
         end
     end
 
