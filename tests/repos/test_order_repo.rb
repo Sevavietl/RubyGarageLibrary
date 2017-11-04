@@ -20,7 +20,7 @@ class TestOrderRepo < Test::Unit::TestCase
         order = OrderRepo.find(1)
 
         assert_instance_of(Order, order)
-        assert_equal(1509655769, order.date)
+        assert_equal('2017-11-02', order.date)
     end
 
     def test_create

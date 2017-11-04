@@ -4,7 +4,7 @@ class OrderRepo
     extend Repo::Delegation
 
     def self.create(order)
-        order.date = Time.now.to_i
+        order.date = Time.now.strftime '%Y-%m-%d'
 
         super(order)
     end
