@@ -1,14 +1,12 @@
-Dir['./lib/library/entities/*.rb'].sort.each { |file| require file }
-Dir['./lib/library/repos/*.rb'].sort.each { |file| require file }
 Dir['./lib/library/services/*.rb'].sort.each { |file| require file }
-Dir['./lib/library/validators/*.rb'].sort.each { |file| require file }
 
 require_relative './form.rb'
 
 class Dispatcher
-    attr_accessor :formater
+    attr_accessor :entity_manager, :formater
 
-    def initialize(formater)
+    def initialize(entity_manager, formater)
+        @entity_manager = entity_manager
         @formater = formater
         @validators = {}
     end
@@ -21,10 +19,10 @@ class Dispatcher
                 when /^exit$/
                     return false
                 when /^list ([a-z]+)$/
-                    puts @formater.table get_repo($1).all
+                    puts @formater.table @entity_manager.get_repo(singularize($1)).all
                 when /^show ([a-z]+) ([1-9][0-9]*)$/
-                    entity = get_repo($1).find($2.to_i)
-                    puts entity ? @formater.item(entity) : "There is no #{singularize($1)} with id=#{$2}."
+                    entity = @entity_manager.find($1, $2.to_i)
+                    puts entity ? @formater.item(entity) : "There is no #{$1} with id=#{$2}."
                 when /^create ([a-z]+)$/
                     create($1)
                 when /^update ([a-z]+) ([1-9][0-9]*)$/
@@ -37,8 +35,7 @@ class Dispatcher
                     book = BookRepo.find($1.to_i)
 
                     unless book
-                        puts "There is no book with id=#{$1}."
-                        return true
+                        return (puts "There is no book with id=#{$1}.") || true
                     end
 
                     reader = StatisticsService.book_top_reader(book)
@@ -56,54 +53,46 @@ class Dispatcher
     private
 
     def create(subject)
-        form = Form.new(get_entity(subject).new).process
+        form = Form.new(@entity_manager.get_entity(subject).new).process
         validator = get_validator(subject).set_inputs(form.to_hash)
 
         if validator.fails?
-            validator.messages.each { |key, message| puts message }
-        else
-            puts get_repo(subject).create(form.entity) ? 'Created' : 'Was not created. Try again.'
+            return validator.messages.each { |key, message| puts message } || true
         end
+
+        puts @entity_manager.get_repo(subject).create(form.entity) ? 'Created' : 'Was not created. Try again.'
     end
 
     def update(subject, id)
-        entity = get_repo(subject).find(id.to_i)
-        
-        if entity
-            form = Form.new(entity).process
-            validator = get_validator(subject).set_inputs(form.to_hash)
+        entity = @entity_manager.find(subject, id.to_i)
 
-            if validator.fails?
-                validator.messages.each { |key, message| puts message }
-            else
-                puts get_repo(subject).update(form.entity) ? 'Saved' : 'Was not saved. Try again.'
-            end
-        else
-            puts "There is no #{singularize($1)} with id=#{$2}."
+        unless entity
+            return (puts "There is no #{$1} with id=#{$2}.") || true
         end
+        
+        form = Form.new(entity).process
+        validator = get_validator(subject).set_inputs(form.to_hash)
+
+        if validator.fails?
+            return validator.messages.each { |key, message| puts message } || true
+        end
+
+        puts @entity_manager.get_repo(subject).update(form.entity) ? 'Saved' : 'Was not saved. Try again.'
     end
 
     def is_integer?(string)
         string.to_i.to_s == string
     end
 
-    def get_repo(subject)
-        Object.const_get("#{singularize(subject).capitalize}Repo")
-    end
-
-    def get_entity(subject)
-        Object.const_get("#{singularize(subject).capitalize}")
+    def singularize(subject)
+        subject.chomp('s')
     end
 
     def get_validator(subject)
         subject = singularize(subject)
 
-        @validators[subject] ||= Object.const_get("#{subject.capitalize}Validator").new
+        @validators[subject] ||= @entity_manager.get_validator(subject)&.new
         @validators[subject]
-    end
-
-    def singularize(subject)
-        subject.chomp('s')
     end
 
     def help
