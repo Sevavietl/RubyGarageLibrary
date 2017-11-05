@@ -43,7 +43,7 @@ ruby lib/application/web/app.rb -o 0.0.0.0
 
 ## Tests
 
-There is a test suit, written with [Test::Unit](http://test-unit.github.io/).
+There is a test suit, written with [Test::Unit](http://test-unit.github.io/) (and [Rack::Test](http://www.rubydoc.info/github/brynary/rack-test/master/frames) additionally for the web app).
 
 ```bash
 rake test
@@ -53,4 +53,5 @@ Be sure the gem is installed:
 
 ```bash
 gem install 'test-unit'
+gem install 'rack-test'
 ```
