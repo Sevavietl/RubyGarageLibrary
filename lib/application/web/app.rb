@@ -4,9 +4,9 @@ require './lib/library/adapters/csv_adapter.rb'
 require './lib/library/formaters/html/formater.rb'
 require './lib/library/entity_manager.rb'
 
+Repo.adapter = CsvAdapter.new(__dir__ + '/../../../data/csv/')
+
 configure do
-    Repo.adapter = CsvAdapter.new(__dir__ + '/../../../data/csv/')
-    
     set :root, File.dirname(__FILE__)
     set :entity_manager, EntityManager.new
     set :formater, HtmlFormater::Formater.new
