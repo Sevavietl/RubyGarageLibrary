@@ -16,42 +16,48 @@ class EntityManager
     end
 
     def get_relations(entity)
-        raise TypeError unless entity< Entity
+        raise TypeError unless entity < Entity
 
         regex = /^([_a-zA-Z]+)_id$/
 
-        entity.attributes.select { |attr| regex.match(attr.to_s) }
-            .map { |attr| regex.match(attr.to_s) && get_entity($1) }
-            .compact
+        entity.attributes.inject([]) do |acc, attr|
+            acc.push(get_entity($1)) if regex.match(attr.to_s)
+            acc
+        end
+        .compact
     end
 
     def get_repo(entity)
-        entity = get_entity(entity) if entity.is_a? String
-
-        begin
-            entity && Object.const_get("#{entity.to_s}Repo")
-        rescue NameError
-            nil
-        end
+        get_class('%sRepo', ensure_entity(entity))
     end
 
     def get_validator(entity)
-        entity = get_entity(entity) if entity.is_a? String
-        
-        begin
-            entity && Object.const_get("#{entity.to_s}Validator")
-        rescue NameError
-            nil
-        end
+        get_class('%sValidator', ensure_entity(entity))
     end
 
     def get_entity(name)
+        ensure_entity(name)
+    end
+
+    private
+
+    def ensure_entity(entity_or_name)
+        entity = case entity_or_name
+            when String
+                get_class('%s', entity_or_name.capitalize)
+            when Class
+                entity_or_name
+            else
+                nil
+        end
+
+        (entity && entity < Entity) ? entity : nil
+    end
+
+    def get_class(pattern, subject)
         begin
-            entity = Object.const_get("#{name.capitalize}")
-
-            raise NameError.new unless entity < Entity
-
-            entity
+            raise NameError if subject == nil
+            Object.const_get(pattern % subject)
         rescue NameError
             nil
         end

@@ -25,7 +25,7 @@ class StatisticsService
         end
 
         def top_popular_books_readers_count(n = 1)
-            top_popular_books(n).inject(Hash.new) do |acc, book|
+            top_popular_books(n).inject({}) do |acc, book|
                 BookRepo.get_orders(book).each do |order|
                     acc[book.id] ||= Set.new
                     acc[book.id].add(order.reader_id) 
