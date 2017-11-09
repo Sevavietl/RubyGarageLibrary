@@ -26,7 +26,7 @@ class Form
             next if [:id, :date].include?(key)
 
             print "#{key}: "
-            @entity.send("#{key}=", gets.strip)
+            @entity.public_send("#{key}=", gets.strip)
         end
     end
 
@@ -37,7 +37,7 @@ class Form
             print "#{key} (#{value}): "
             
             input = gets.strip
-            @entity.send("#{key}=", input) if input != ''
+            @entity.public_send("#{key}=", input) if input != ''
         end
     end
 end

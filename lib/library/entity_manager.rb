@@ -9,7 +9,7 @@ class EntityManager
 
     def get_relatives(entity)
         get_relations(entity.class).inject({}) do |acc, e|
-            acc[e] = get_repo(e).find(entity.send("#{e.to_s.downcase}_id".to_sym))
+            acc[e] = get_repo(e).find(entity.public_send("#{e.to_s.downcase}_id".to_sym))
             acc
         end
         .compact
