@@ -13,14 +13,12 @@ class CsvAdapter
         CSV.open(file_name(klass), 'w') do |csv|
             csv.puts records.headers
 
-            records.each do |row| 
-                csv.puts row
-            end
+            records.each{ |row| csv.puts row }
 
             csv.puts hydrate_row(CSV::Row.new(records.headers, []), record)
         end
 
-        return record
+        record
     end
 
     def update(klass, record)
@@ -29,14 +27,10 @@ class CsvAdapter
         CSV.open(file_name(klass), 'w') do |csv|
             csv.puts records.headers
 
-            records.each do |row|
-                row = hydrate_row(row, record) if row[:id] == record[:id]
-            
-                csv.puts row
-            end
+            records.each{ |row| csv.puts row[:id] == record[:id] ? hydrate_row(row, record) : row }
         end
 
-        return record
+        record
     end
 
     def delete(klass, record)
@@ -45,9 +39,7 @@ class CsvAdapter
         CSV.open(file_name(klass), 'w') do |csv|
             csv.puts records.headers
 
-            records.each do |row| 
-                csv.puts row unless row[:id] == record[:id]
-            end
+            records.each{ |row| csv.puts row unless row[:id] == record[:id] }
         end
     end
 
@@ -58,15 +50,13 @@ class CsvAdapter
     end
 
     def find(klass, id)
-        read_file(klass).find { |row| row[:id] == id }.to_h
+        read_file(klass).find { |row| row[:id] == id }&.to_h
     end
 
     def query(klass, selector)
         field, sign, value = selector.values_at(:field, :sign, :value)
 
-        read_file(klass).select do |row| 
-            row[field].send(sign, value)
-        end
+        read_file(klass).select{ |row| row[field].send(sign, value) }
     end
 
     private

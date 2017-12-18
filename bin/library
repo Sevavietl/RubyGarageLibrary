@@ -1,0 +1,8 @@
+#!/usr/bin/env ruby
+
+require './lib/application/console/app.rb'
+require './lib/library/adapters/in_memory_adapter.rb'
+
+require_relative '../data/in_memory/data.rb'
+
+ConsoleApp.new({ :adapter => InMemoryAdapter.new(DATA) }).run
